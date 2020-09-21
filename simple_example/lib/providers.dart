@@ -19,15 +19,13 @@ final streamProvider = StreamProvider<int>((ref) {
   });
 });
 
-/// Providers are declared globally and specifies how to create a state
-final counterProvider = StateProvider<int>((ref) => 0);
+final stateProvider = StateProvider<int>((ref) => 0);
 
 final stateNotifierProvider =
-    StateNotifierProvider<CountNotifier>((ref) => CountNotifier());
+    StateNotifierProvider<CountNotifier>((ref) => CountNotifier(6));
 
 class CountNotifier extends StateNotifier<int> {
-  CountNotifier() : super(6);
-
+  CountNotifier(int state) : super(6);
   void add() {
     state = state + 1;
   }
@@ -37,17 +35,11 @@ class CountNotifier extends StateNotifier<int> {
   }
 }
 
-class CountState {
-  final int counter;
-
-  CountState(this.counter);
-}
-
 final changeNotifierProvider =
-    ChangeNotifierProvider<ChangeCountNotifier>((ref) => ChangeCountNotifier());
+    ChangeNotifierProvider<ChangeCount>((ref) => ChangeCount());
 
-class ChangeCountNotifier extends ChangeNotifier {
-  int number = 0;
+class ChangeCount extends ChangeNotifier {
+  int number = 6;
   void add() {
     number++;
     notifyListeners();

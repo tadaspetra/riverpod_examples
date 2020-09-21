@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Riverpod Demo',
       home: Home(),
     );
   }
@@ -22,75 +21,43 @@ class Home extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final text = useProvider(textProvider);
-    final counter = useProvider(counterProvider);
     final future = useProvider(futureProvider);
     final stream = useProvider(streamProvider);
+    final state = useProvider(stateProvider);
+
     final int stateNotifierState = useProvider(stateNotifierProvider.state);
     final stateNotifier = useProvider(stateNotifierProvider);
-    final changeNotifier = useProvider(changeNotifierProvider);
 
+    final changeNotifier = useProvider(changeNotifierProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter example')),
+      appBar: AppBar(title: const Text('Riverpod Demo')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Provider: " + text),
-            SizedBox(
-              height: 20,
-            ),
+            Text("Text Provider: " + text),
+            SizedBox(height: 20),
             future.when(
               data: (config) {
-                return Text("FutureProvider: " + config.toString());
+                return Text("Future Provider: " + config.toString());
               },
-              loading: () => const CircularProgressIndicator(),
-              error: (err, stack) => Text('Error: $err'),
+              loading: () => CircularProgressIndicator(),
+              error: (err, stack) => Text("Error: " + err),
             ),
-            // (future.data == null)
-            //     ? CircularProgressIndicator()
-            //     : Text(future.data.value.toString()),
-
-            Consumer(
-              builder: (BuildContext context,
-                  T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
-                var config = watch(futureProvider);
-
-                return config.when(
-                  loading: () => const CircularProgressIndicator(),
-                  error: (err, stack) => Text('Error: $err'),
-                  data: (config) {
-                    return Text("FutureProvider: " + config.toString());
-                  },
-                );
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             stream.when(
               data: (config) {
-                return Text("StreamProvider: " + config.toString());
+                return Text("Stream Provider: " + config.toString());
               },
-              loading: () => const CircularProgressIndicator(),
-              error: (err, stack) => Text('Error: $err'),
+              loading: () => CircularProgressIndicator(),
+              error: (err, stack) => Text("Error: " + err),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            // Consumer is a widget that allows you reading providers.
-            // You could also use the hook "useProvider" if you uses flutter_hooks
-            Text("StateProvider: " + counter.state.toString()),
-            Consumer(builder: (context, watch, _) {
-              final count = watch(counterProvider).state;
-              return Text('StateProvider: $count');
-            }),
-            SizedBox(
-              height: 20,
-            ),
-            //TODO: This part does not rebuild, what am i doing wrong?
-            Text("StateNotifierProvider: " + stateNotifierState.toString()),
+            SizedBox(height: 20),
+            Text("State Provider: " + state.state.toString()),
+            SizedBox(height: 20),
+            Text("StateNotifier Provider: " + stateNotifierState.toString()),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 RaisedButton(
                   onPressed: () {
@@ -100,18 +67,17 @@ class Home extends HookWidget {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    stateNotifier.subtract();
+                    context.read(stateNotifierProvider).subtract();
                   },
                   child: Text("subtract"),
                 ),
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Text("ChangeNotifierProvider: " + changeNotifier.number.toString()),
+            SizedBox(height: 20),
+            Text(
+                "ChangeNotifier Provider: " + changeNotifier.number.toString()),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 RaisedButton(
                   onPressed: () {
@@ -126,42 +92,17 @@ class Home extends HookWidget {
                   child: Text("subtract"),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is an utility to read a provider without listening to it
-        onPressed: () => counter.state++,
+        onPressed: () {
+          state.state++;
+        },
         child: const Icon(Icons.add),
       ),
     );
   }
 }
-
-// class Home extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Counter example')),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             // Consumer is a widget that allows you reading providers.
-//             // You could also use the hook "useProvider" if you uses flutter_hooks
-//             Consumer(builder: (context, watch, _) {
-//               final count = watch(counterProvider).state;
-//               return Text('$count');
-//             }),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         // The read method is an utility to read a provider without listening to it
-//         onPressed: () => context.read(counterProvider).state++,
-//         child: const Icon(Icons.add),
-//       ),
-//     );
-//   }
-// }
