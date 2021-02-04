@@ -3,15 +3,18 @@ import 'package:simple_example/database.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 // user state for the app
-final userProvider = FutureProvider.autoDispose<String>((ref) async {
+final userProvider = FutureProvider.autoDispose.family<String, String>((ref, str) async {
+  if (str == "Tadas") {
+    return "Good Tadas";
+  }
   return ref.read(databaseProvider).getUserData();
 });
 
-// counter state for the app
-final counterController = StateNotifierProvider.autoDispose<CountNotifier>((ref) => CountNotifier());
+// counter state notifier for the app
+final counterController = StateNotifierProvider<CounterNotifier>((ref) => CounterNotifier());
 
-class CountNotifier extends StateNotifier<int> {
-  CountNotifier() : super(0);
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
 
   void add() {
     state = state + 1;
@@ -23,10 +26,10 @@ class CountNotifier extends StateNotifier<int> {
 }
 
 // async state notifier provider for state that doesn't change in real time
-final counterAsyncController = StateNotifierProvider.autoDispose<CountAsyncNotifier>((ref) => CountAsyncNotifier(ref.read));
+final counterAsyncController = StateNotifierProvider<CounterAsyncNotifier>((ref) => CounterAsyncNotifier(ref.read));
 
-class CountAsyncNotifier extends StateNotifier<AsyncValue<int>> {
-  CountAsyncNotifier(this.read) : super(AsyncLoading()) {
+class CounterAsyncNotifier extends StateNotifier<AsyncValue<int>> {
+  CounterAsyncNotifier(this.read) : super(AsyncLoading()) {
     _init();
   }
 
@@ -39,13 +42,13 @@ class CountAsyncNotifier extends StateNotifier<AsyncValue<int>> {
 
   void add() async {
     state = AsyncLoading();
-    int databaseCount = await read(databaseProvider).increment();
-    state = AsyncData(databaseCount);
+    int count = await read(databaseProvider).increment();
+    state = AsyncData(count);
   }
 
   void subtract() async {
     state = AsyncLoading();
-    int databaseCount = await read(databaseProvider).increment();
-    state = AsyncData(databaseCount);
+    int count = await read(databaseProvider).decrement();
+    state = AsyncData(count);
   }
 }

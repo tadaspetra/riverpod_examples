@@ -27,14 +27,11 @@ class Home extends StatelessWidget {
           children: [
             Consumer(
               builder: (BuildContext context, T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
-                return watch(userProvider).when(
+                return watch(userProvider("Tadas")).maybeWhen(
                   data: (String value) {
                     return Text(value);
                   },
-                  error: (Object error, StackTrace stackTrace) {
-                    return Text("Error");
-                  },
-                  loading: () {
+                  orElse: () {
                     return CircularProgressIndicator();
                   },
                 );
@@ -55,10 +52,10 @@ class Home extends StatelessWidget {
               builder: (BuildContext context, T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
                 return watch(counterAsyncController.state).when(
                   data: (int value) {
-                    return Text("Async Value: " + value.toString());
+                    return Text("AsyncValue: " + value.toString());
                   },
                   error: (Object error, StackTrace stackTrace) {
-                    return Text("Error");
+                    return Text("error");
                   },
                   loading: () {
                     return CircularProgressIndicator();
