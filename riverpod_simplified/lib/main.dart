@@ -26,7 +26,8 @@ class Home extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Consumer(
-              builder: (BuildContext context, T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
+              builder: (BuildContext context,
+                  T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
                 return watch(userProvider("Tadas")).maybeWhen(
                   data: (String value) {
                     return Text(value);
@@ -41,16 +42,18 @@ class Home extends StatelessWidget {
               height: 100,
             ),
             Consumer(
-              builder: (BuildContext context, T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
-                return Text("Basic: " + watch(counterController.state).toString());
+              builder: (BuildContext context,
+                  T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
+                return Text("Basic: " + watch(counterController).toString());
               },
             ),
             SizedBox(
               height: 100,
             ),
             Consumer(
-              builder: (BuildContext context, T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
-                return watch(counterAsyncController.state).when(
+              builder: (BuildContext context,
+                  T Function<T>(ProviderBase<Object, T>) watch, Widget child) {
+                return watch(counterAsyncController).when(
                   data: (int value) {
                     return Text("AsyncValue: " + value.toString());
                   },
@@ -66,18 +69,18 @@ class Home extends StatelessWidget {
             SizedBox(
               height: 100,
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text("Add"),
               onPressed: () {
-                context.read(counterController).add();
-                context.read(counterAsyncController).add();
+                context.read(counterController.notifier).add();
+                context.read(counterAsyncController.notifier).add();
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text("Subtract"),
               onPressed: () {
-                context.read(counterController).subtract();
-                context.read(counterAsyncController).subtract();
+                context.read(counterController.notifier).subtract();
+                context.read(counterAsyncController.notifier).subtract();
               },
             )
           ],
