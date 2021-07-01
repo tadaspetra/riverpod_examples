@@ -3,7 +3,8 @@ import 'package:simple_example/database.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 // user state for the app
-final userProvider = FutureProvider.autoDispose.family<String, String>((ref, str) async {
+final userProvider =
+    FutureProvider.autoDispose.family<String, String>((ref, str) async {
   if (str == "Tadas") {
     return "Good Tadas";
   }
@@ -11,7 +12,8 @@ final userProvider = FutureProvider.autoDispose.family<String, String>((ref, str
 });
 
 // counter state notifier for the app
-final counterController = StateNotifierProvider<CounterNotifier>((ref) => CounterNotifier());
+final counterController =
+    StateNotifierProvider<CounterNotifier, int>((ref) => CounterNotifier());
 
 class CounterNotifier extends StateNotifier<int> {
   CounterNotifier() : super(0);
@@ -26,7 +28,9 @@ class CounterNotifier extends StateNotifier<int> {
 }
 
 // async state notifier provider for state that doesn't change in real time
-final counterAsyncController = StateNotifierProvider<CounterAsyncNotifier>((ref) => CounterAsyncNotifier(ref.read));
+final counterAsyncController =
+    StateNotifierProvider<CounterAsyncNotifier, AsyncValue<int>>(
+        (ref) => CounterAsyncNotifier(ref.read));
 
 class CounterAsyncNotifier extends StateNotifier<AsyncValue<int>> {
   CounterAsyncNotifier(this.read) : super(AsyncLoading()) {
